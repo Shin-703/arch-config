@@ -272,31 +272,31 @@ myEventHook = mempty
 -- colors
 darkGreen = "#007755"
 fg        = "#8abeb7"
-color1    = "#880088"
-color2    = "#005599"
-color3    = "#006633"
-color4    = "#997700"
-color5    = "#995500"
-color6    = "#990000"
-color7    = "#373737"
+color1    = "#aa00bb"
+color2    = "#5555bb"
+color3    = "#0077bb"
+color4    = "#008844"
+color5    = "#997700"
+color6    = "#aa6600"
+color7    = "#bb0000"
 color8    = "#373737"
-color9    = "#373737" 
+color9    = "#373737"
 
 color1b    = "#330033"
-color2b    = "#001144"
-color3b    = "#003300"
-color4b    = "#333000"
-color5b    = "#442000"
-color6b    = "#400000"
-color7b    = "#272727"
+color2b    = "#111144"
+color3b    = "#001155"
+color4b    = "#003300"
+color5b    = "#333000"
+color6b    = "#442000"
+color7b    = "#400000"
 color8b    = "#272727"
-color9b    = "#272727" 
+color9b    = "#272727"
 
 
 -- The gay bar
 --
-myLogHook :: DC.Client -> PP
-myLogHook dbus =  def
+myLogHookGay :: DC.Client -> PP
+myLogHookGay dbus =  def
     { ppOutput = D.send dbus
     , ppCurrent = (\w -> case w of
             "1"  ->  wrap ("%{B" ++ color1 ++ "}  ") "  %{B-}" w
@@ -319,8 +319,8 @@ myLogHook dbus =  def
             "5"  ->  wrap ("%{B" ++ color5b ++ "}  ") "  %{B-}" w
             "6"  ->  wrap ("%{B" ++ color6b ++ "}  ") "  %{B-}" w
             "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
-            "8"  ->  wrap ("%{B" ++ color8b ++ "}  ") "  %{B-}" w
-            "9"  ->  wrap ("%{B" ++ color9b ++ "}  ") "  %{B-}" w
+            "8"  ->  wrap ("%{F" ++ color8b ++ "}  ") "  %{F-}" w
+            "9"  ->  wrap ("%{F" ++ color9b ++ "}  ") "  %{F-}" w
       )
 
     , ppHiddenNoWindows = (\w -> case w of
@@ -331,8 +331,8 @@ myLogHook dbus =  def
             "5"  ->  wrap ("%{B" ++ color5b ++ "}  ") "  %{B-}" w
             "6"  ->  wrap ("%{B" ++ color6b ++ "}  ") "  %{B-}" w
             "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
-            "8"  ->  wrap ("%{B" ++ color8b ++ "}  ") "  %{B-}" w
-            "9"  ->  wrap ("%{B" ++ color9b ++ "}  ") "  %{B-}" w
+            "8"  ->  wrap ("%{F" ++ color8b ++ "}  ") "  %{F-}" w
+            "9"  ->  wrap ("%{F" ++ color9b ++ "}  ") "  %{F-}" w
       )
 
     , ppWsSep = ""
@@ -342,18 +342,19 @@ myLogHook dbus =  def
     } 
 
 -- The simpler bar
--- myLogHook :: DC.Client -> PP
--- myLogHook dbus =  def
---     { ppOutput = D.send dbus
---     , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
---     , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
---     , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
---     , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
---     , ppWsSep = ""
---     , ppSep = ""
---     , ppLayout = return ""
---     , ppTitle = return ""
---    }
+myLogHook :: DC.Client -> PP
+myLogHook dbus =  def
+    { ppOutput = D.send dbus
+    , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
+    , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
+    , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppWsSep = ""
+    , ppSep = ""
+    , ppLayout = return ""
+    , ppTitle = return ""
+    }
+
 
 
 
@@ -402,7 +403,7 @@ main = do
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = dynamicLogWithPP (myLogHook dbus),
+        logHook            = dynamicLogWithPP (myLogHookGay dbus),
         startupHook        = myStartupHook
     }
 
