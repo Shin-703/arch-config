@@ -146,6 +146,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Manage screens
     , ((modm              , xK_s     ), spawn "arandr")
 
+    -- Sleep mode
+    , ((0, xF86XK_Sleep), spawn "xset dpms force off && slock")
+
     -- Screenshots
     , ((modm .|. shiftMask, xK_s     ), spawn "flameshot gui -c")
 
@@ -269,15 +272,68 @@ myEventHook = mempty
 bg        = "#dfdfff"
 darkGreen = "#007755"
 fg        = "#8abeb7"
+color1    = "#880088"
+color2    = "#005599"
+color3    = "#006633"
+color4    = "#997700"
+color5    = "#995500"
+color6    = "#990000"
+color7    = "#777777"
+color8    = "#777777"
+color9    = "#777777" 
+
+color1b    = "#330033"
+color2b    = "#001144"
+color3b    = "#003300"
+color4b    = "#333000"
+color5b    = "#442000"
+color6b    = "#400000"
+color7b    = "#444444"
+color8b    = "#444444"
+color9b    = "#444444" 
+
+
 
 myLogHook :: DC.Client -> PP
 myLogHook dbus =  def
     { ppOutput = D.send dbus
-    , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
+    , ppCurrent = (\w -> case w of
+            "1"  ->  wrap ("%{B" ++ color1 ++ "}  ") "  %{B-}" w
+            "2"  ->  wrap ("%{B" ++ color2 ++ "}  ") "  %{B-}" w
+            "3"  ->  wrap ("%{B" ++ color3 ++ "}  ") "  %{B-}" w
+            "4"  ->  wrap ("%{B" ++ color4 ++ "}  ") "  %{B-}" w
+            "5"  ->  wrap ("%{B" ++ color5 ++ "}  ") "  %{B-}" w
+            "6"  ->  wrap ("%{B" ++ color6 ++ "}  ") "  %{B-}" w
+            "7"  ->  wrap ("%{B" ++ color7 ++ "}  ") "  %{B-}" w
+            "8"  ->  wrap ("%{B" ++ color8 ++ "}  ") "  %{B-}" w
+            "9"  ->  wrap ("%{B" ++ color9 ++ "}  ") "  %{B-}" w
+      )
     , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
     --, ppUrgent = wrap ("%{F" ++ darkGreen ++ "}  ") "  %{F-}"
-    , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
-    , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppHidden = (\w -> case w of
+            "1"  ->  wrap ("%{B" ++ color1b ++ "}  ") "  %{B-}" w
+            "2"  ->  wrap ("%{B" ++ color2b ++ "}  ") "  %{B-}" w
+            "3"  ->  wrap ("%{B" ++ color3b ++ "}  ") "  %{B-}" w
+            "4"  ->  wrap ("%{B" ++ color4b ++ "}  ") "  %{B-}" w
+            "5"  ->  wrap ("%{B" ++ color5b ++ "}  ") "  %{B-}" w
+            "6"  ->  wrap ("%{B" ++ color6b ++ "}  ") "  %{B-}" w
+            "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
+            "8"  ->  wrap ("%{B" ++ color8b ++ "}  ") "  %{B-}" w
+            "9"  ->  wrap ("%{B" ++ color9b ++ "}  ") "  %{B-}" w
+      )
+
+    , ppHiddenNoWindows = (\w -> case w of
+            "1"  ->  wrap ("%{B" ++ color1b ++ "}  ") "  %{B-}" w
+            "2"  ->  wrap ("%{B" ++ color2b ++ "}  ") "  %{B-}" w
+            "3"  ->  wrap ("%{B" ++ color3b ++ "}  ") "  %{B-}" w
+            "4"  ->  wrap ("%{B" ++ color4b ++ "}  ") "  %{B-}" w
+            "5"  ->  wrap ("%{B" ++ color5b ++ "}  ") "  %{B-}" w
+            "6"  ->  wrap ("%{B" ++ color6b ++ "}  ") "  %{B-}" w
+            "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
+            "8"  ->  wrap ("%{B" ++ color8b ++ "}  ") "  %{B-}" w
+            "9"  ->  wrap ("%{B" ++ color9b ++ "}  ") "  %{B-}" w
+      )
+
     , ppWsSep = ""
     , ppSep = ""
     , ppLayout = return ""
