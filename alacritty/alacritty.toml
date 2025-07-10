@@ -1,6 +1,7 @@
 [font]
-size = 8.5
+normal = { family = "RobotoMonoNerdFont", style = "Regular" }
+size = 8
 
 [window]
-opacity = 0.307
+opacity = 0.703
 blur = true

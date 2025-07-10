@@ -12,10 +12,19 @@ import Data.Monoid
 import System.Exit
 import XMonad.Util.SpawnOnce
 import XMonad.Layout.Spacing
+import XMonad.Hooks.ManageDocks
 import XMonad.Layout.BinarySpacePartition
+import XMonad.Layout.NoBorders
+import XMonad.Layout.ToggleLayouts
+import Graphics.X11.ExtraTypes.XF86
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+
+-- dbus
+import XMonad.Hooks.DynamicLog
+import qualified XMonad.DBus as D
+import qualified DBus.Client as DC
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -57,6 +66,9 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 myNormalBorderColor  = "#005555"
 myFocusedBorderColor = "#77aaff"
 
+increaseBrightness = "echo $(($(cat /sys/class/backlight/intel_backlight/brightness)+10000)) > /sys/class/backlight/intel_backlight/brightness"
+decreaseBrightness = "echo $(($(cat /sys/class/backlight/intel_backlight/brightness)-10000)) > /sys/class/backlight/intel_backlight/brightness"
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
@@ -65,8 +77,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
     [ ((modm,               xK_Return), spawn $ XMonad.terminal conf)
 
-    -- launch dmenu
-    , ((modm,               xK_p     ), spawn "dmenu_run")
+    -- launch rofi show -drun
+    , ((modm,               xK_o     ), spawn "rofi -theme solarized_alternate -show drun -icon-theme 'Papirus' -show-icons")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -74,8 +86,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- close focused window
     , ((modm,               xK_c     ), kill)
 
-     -- Rotate through the available layout algorithms
-    , ((modm,               xK_f ), sendMessage NextLayout)
+    -- Rotate through the available layout algorithms
+    , ((modm,               xK_r ), sendMessage NextLayout)
+
+    -- Full Screen
+    , ((modm,               xK_f ), sendMessage (Toggle "Full") <+> sendMessage ToggleStruts)
 
     --  Reset the layouts on the current workspace to default
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
@@ -84,25 +99,28 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_n     ), refresh)
 
     -- Move focus to the next window
-    , ((modm,               xK_Tab   ), windows W.focusDown)
+    , ((modm,               xK_Tab   ), windows W.focusDown  )
 
     -- Move focus to the next window
-    , ((modm,               xK_j     ), windows W.focusDown)
+    , ((modm,               xK_j     ), windows W.focusDown  )
 
     -- Move focus to the previous window
-    , ((modm,               xK_k     ), windows W.focusUp  )
+    , ((modm,               xK_k     ), windows W.focusUp    )
 
     -- Move focus to the master window
-    , ((modm,               xK_m     ), windows W.focusMaster  )
+    , ((modm,               xK_m     ), windows W.focusMaster)
 
     -- Swap the focused window and the master window
-    , ((modm .|. shiftMask, xK_m     ), windows W.swapMaster)
+    , ((modm .|. shiftMask, xK_m     ), windows W.swapMaster )
 
     -- Swap the focused window with the next window
-    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  )
+    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown   )
 
     -- Swap the focused window with the previous window
-    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    )
+    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp     )
+
+    -- No Border
+    --, ((modm,               xK_B     ), )
 
     -- Middle line moves left
     , ((modm,               xK_h     ), sendMessage $ ExpandTowards L)
@@ -124,6 +142,21 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Deincrement the number of windows in the master area
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
+
+    -- Manage screens
+    , ((modm              , xK_s     ), spawn "arandr")
+
+    -- Screenshots
+    , ((modm .|. shiftMask, xK_s     ), spawn "flameshot gui -c")
+
+    -- Sound keys
+    , ((0                 , xF86XK_AudioRaiseVolume ), spawn "pactl set-sink-volume 0 +5%")
+    , ((0                 , xF86XK_AudioLowerVolume ), spawn "pactl set-sink-volume 0 -5%")
+    , ((0                 , xF86XK_AudioMute        ), spawn "pactl set-sink-mute 0 toggle")
+
+    -- Brightness keys
+    , ((0                 , xF86XK_MonBrightnessUp  ), spawn increaseBrightness)
+    , ((0                 , xF86XK_MonBrightnessDown), spawn decreaseBrightness)
 
     -- Toggle the status bar gap
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
@@ -147,16 +180,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-[1..9], Move client to workspace N
     --
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9] 
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
 
     --
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
+    -- mod-{w,e}, Switch to physical/Xinerama screens 1 or 2
+    -- mod-shift-{w,e}, Move client to screen 1 or 2
     --
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        | (key, sc) <- zip [xK_w, xK_e] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
@@ -189,7 +222,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 --
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
-myLayout = tiled ||| Full
+myLayout = avoidStruts $ toggleLayouts (noBorders Full) ((spacingWithEdge 4 $ tiled) ||| (spacingWithEdge 4 $ Mirror tiled) ||| (spacingWithEdge 4 $ Full))
   where
      -- tiling algorithm
      tiled   = emptyBSP 
@@ -232,7 +265,24 @@ myEventHook = mempty
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
-myLogHook = return ()
+
+bg        = "#dfdfff"
+darkGreen = "#007755"
+fg        = "#8abeb7"
+
+myLogHook :: DC.Client -> PP
+myLogHook dbus =  def
+    { ppOutput = D.send dbus
+    , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
+    , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
+    --, ppUrgent = wrap ("%{F" ++ darkGreen ++ "}  ") "  %{F-}"
+    , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppWsSep = ""
+    , ppSep = ""
+    , ppLayout = return ""
+    , ppTitle = return ""
+    } 
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -243,23 +293,24 @@ myLogHook = return ()
 --
 -- By default, do nothing.
 myStartupHook = do
-    spawnOnce "feh --bg-fill ~/Pictures/Wallpapers/stars"
+    spawnOnce "~/.config/polybar/launch.sh &"
+    spawnOnce "feh --bg-fill ~/Pictures/Wallpapers/sky.jpg"
     spawnOnce "picom --config ~/.config/picom.conf"
+    spawn "~/.config/xrandr/hdmi"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
 -- Run xmonad with the settings you specify. No need to modify this.
 --
-main = xmonad defaults
-
--- A structure containing your configuration settings, overriding
--- fields in the default config. Any you don't override, will
--- use the defaults defined in xmonad/XMonad/Config.hs
---
--- No need to modify this.
---
-defaults = def {
+main :: IO ()
+main = do
+    -- Connect to DBus
+    dbus <- D.connect
+    -- Request access (needed when sending messages)
+    D.requestAccess dbus
+    -- start xmonad
+    xmonad $ def {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -275,10 +326,10 @@ defaults = def {
         mouseBindings      = myMouseBindings,
 
       -- hooks, layouts
-        layoutHook         = spacingWithEdge 3 $ myLayout,
+        layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = myLogHook,
+        logHook            = dynamicLogWithPP (myLogHook dbus),
         startupHook        = myStartupHook
     }
 
@@ -287,8 +338,8 @@ help :: String
 help = unlines ["The default modifier key is 'alt'. Default keybindings:",
     "",
     "-- launching and killing programs",
-    "mod-Shift-Enter  Launch xterminal",
-    "mod-p            Launch dmenu",
+    "mod-Enter  Launch xterminal",
+    "mod-o            Launch dmenu",
     "mod-Shift-p      Launch gmrun",
     "mod-Shift-c      Close/kill the focused window",
     "mod-Space        Rotate through the available layout algorithms",
