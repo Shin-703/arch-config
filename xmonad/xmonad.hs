@@ -269,7 +269,7 @@ myEventHook = mempty
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
 
-bg        = "#dfdfff"
+-- colors
 darkGreen = "#007755"
 fg        = "#8abeb7"
 color1    = "#880088"
@@ -278,9 +278,9 @@ color3    = "#006633"
 color4    = "#997700"
 color5    = "#995500"
 color6    = "#990000"
-color7    = "#777777"
-color8    = "#777777"
-color9    = "#777777" 
+color7    = "#373737"
+color8    = "#373737"
+color9    = "#373737" 
 
 color1b    = "#330033"
 color2b    = "#001144"
@@ -288,12 +288,13 @@ color3b    = "#003300"
 color4b    = "#333000"
 color5b    = "#442000"
 color6b    = "#400000"
-color7b    = "#444444"
-color8b    = "#444444"
-color9b    = "#444444" 
+color7b    = "#272727"
+color8b    = "#272727"
+color9b    = "#272727" 
 
 
-
+-- The gay bar
+--
 myLogHook :: DC.Client -> PP
 myLogHook dbus =  def
     { ppOutput = D.send dbus
@@ -339,6 +340,22 @@ myLogHook dbus =  def
     , ppLayout = return ""
     , ppTitle = return ""
     } 
+
+-- The simpler bar
+-- myLogHook :: DC.Client -> PP
+-- myLogHook dbus =  def
+--     { ppOutput = D.send dbus
+--     , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
+--     , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
+--     , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+--     , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+--     , ppWsSep = ""
+--     , ppSep = ""
+--     , ppLayout = return ""
+--     , ppTitle = return ""
+--    }
+
+
 
 ------------------------------------------------------------------------
 -- Startup hook
