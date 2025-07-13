@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-numcli dev wifi rescan
+nmcli dev wifi rescan
 
 # Formatted list. sed made me >_<
 LIST=$(nmcli --fields SSID,SECURITY,BARS dev wifi list | sed '/^--/d' | sed 1d | sed -E "s/ WPA*.?\S//g" | sed -E "s//     /g" | sed -E "s/(▂▄▆█|\*{4})/󰤨/g" | sed -E "s/(▂▄▆_|\*{3} )/󰤥/g" | sed -E "s/(▂▄__|\*{2}  )/󰤢/g" | sed -E "s/(▂___|\*{1}   )/󰤟/g" | sed -E "s/.*([󰤨󰤥󰤢󰤟])/  \1/g")
@@ -14,7 +14,7 @@ elif [[ "$CONSTATE" =~ "disabled" ]]; then
 fi
 
 # display menu; store user choice
-CHENTRY=$(echo -e "$TOGGLE\n$LIST" | uniq -u | rofi -dmenu -selected-row 1)
+CHENTRY=$(echo -e "$TOGGLE\n$LIST" | uniq -u | rofi -theme wifi -dmenu -selected-row 1)
 # store selected SSID
 CHSSID=$(echo "$CHENTRY" | sed  's/\s\{2,\}/\|/g' | awk -F "|" '{print $1}')
 
@@ -38,7 +38,7 @@ else
 		nmcli con up "$CHSSID"
 	else
 		if [[ "$CHENTRY" =~ "" ]]; then
-			WIFIPASS=$(echo " Press Enter if network is saved" | rofi -dmenu -p " WiFi Password: " -lines 1 )
+			WIFIPASS=$(echo " Press Enter if network is saved" | rofi -theme wifi -dmenu -p " WiFi Password: " -lines 1 )
 		fi
 		if nmcli dev wifi con "$CHSSID" password "$WIFIPASS"
 		then
