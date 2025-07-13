@@ -1,20 +1,20 @@
 * {
     transparency:     "real";
-    se:               rgba ( 94, 108, 145, 75 % );
+    se:               rgba ( 94, 108, 145, 90 % );
     bg:               rgba ( 0, 0, 0, 0 % );
-    red:              rgba ( 255, 85, 85, 75 % );
-    bg2:              rgba ( 39, 39, 39, 75 % );
+    red:              rgba ( 255, 85, 85, 90 % );
+    bg2:              rgba ( 39, 39, 39, 90 % );
     al:               rgba ( 0, 0, 0, 0 % );
-    opacity:          75.0000% ;
+    opacity:          90.0000% ;
     fg:               rgba ( 0, 119, 187, 90 % );
     background-color: @bg;
-    ac:               rgba ( 255, 121, 198, 75 % );
-    //font: "RobotoMonoNerdFont Thin 11";
+    ac:               rgba ( 255, 121, 198, 90 % );
+    //font: "RobotoMonoNerdFontMono 11";
 }
 window {
     padding:          5;
     height:           27%;
-    width:            17%;
+    width:            22%;
     location:         north east;
     anchor:           north east;
     x-offset:         -5px;
@@ -45,11 +45,12 @@ listview {
     border:       0px ;
 }
 element-text {
+    horizontal-align: 0.5;
     background-color: rgba ( 0, 0, 0, 0 % );
     text-color:       inherit;
 }
 element {
-    padding:       2px ;
+    padding:       3px ;
     border:        0px ;
     horizontal-align: 0.5;
 }
