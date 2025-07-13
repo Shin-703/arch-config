@@ -14,7 +14,7 @@ elif [[ "$CONSTATE" =~ "disabled" ]]; then
 fi
 
 # display menu; store user choice
-CHENTRY=$(echo -e "$TOGGLE\n$LIST" | uniq -u | rofi -theme wifi -dmenu -selected-row 1)
+CHENTRY=$(echo -e "$TOGGLE\n$LIST" | uniq -u | rofi -theme wifi -dmenu -p " SSID: ")
 # store selected SSID
 CHSSID=$(echo "$CHENTRY" | sed  's/\s\{2,\}/\|/g' | awk -F "|" '{print $1}')
 

@@ -3,6 +3,7 @@
     se:               rgba ( 94, 108, 145, 90 % );
     bg:               rgba ( 0, 0, 0, 0 % );
     red:              rgba ( 255, 85, 85, 90 % );
+    green:            rgba ( 0, 139, 38, 90 % );
     bg2:              rgba ( 39, 39, 39, 90 % );
     al:               rgba ( 0, 0, 0, 0 % );
     opacity:          90.0000% ;
@@ -21,8 +22,8 @@ window {
     y-offset:         30px;
     background-color: @bg2;
     border-color:     @ac;
-    border:           0px ;
-    children: [listview];
+    border:           0px;
+    children: [ inputbar, listview ];
 }
 entry {
     spacing:    0;
@@ -31,8 +32,8 @@ entry {
 mainbox {
     padding:      0;
     border-color: @ac;
-    border:       0px ;
-    children:     [ inputbar,listview ];
+    border:       0px;
+    children:     [ listview ];
 }
 listview {
     fixed-height: 0;
@@ -43,6 +44,9 @@ listview {
     columns:      1;
     spacing:      3px ;
     border:       0px ;
+}
+prompt {
+    text-color:   @fg;
 }
 element-text {
     horizontal-align: 0.5;
