@@ -59,7 +59,7 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["1","2","3","4","5","6","7","8","9", "10"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -78,7 +78,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm,               xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch rofi show -drun
-    , ((modm,               xK_o     ), spawn "rofi -theme solarized_alternate -show drun -icon-theme 'Papirus' -show-icons")
+    , ((modm,               xK_o     ), spawn "rofi -theme main -show drun -icon-theme 'Papirus' -show-icons")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -183,7 +183,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-[1..9], Move client to workspace N
     --
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9] 
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1,xK_2,xK_3,xK_4,xK_5,xK_6,xK_7,xK_8,xK_9,xK_0]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
 
@@ -272,6 +272,7 @@ myEventHook = mempty
 -- colors
 darkGreen = "#007755"
 fg        = "#8abeb7"
+bg        = "#272727"
 color1    = "#aa00bb"
 color2    = "#5555bb"
 color3    = "#0077bb"
@@ -281,6 +282,7 @@ color6    = "#aa6600"
 color7    = "#bb0000"
 color8    = "#373737"
 color9    = "#373737"
+color10   = "#373737"
 
 color1b    = "#330033"
 color2b    = "#111144"
@@ -291,7 +293,7 @@ color6b    = "#442000"
 color7b    = "#400000"
 color8b    = "#272727"
 color9b    = "#272727"
-
+color10b    = "#272727"
 
 -- The gay bar
 --
@@ -308,6 +310,7 @@ myLogHookGay dbus =  def
             "7"  ->  wrap ("%{B" ++ color7 ++ "}  ") "  %{B-}" w
             "8"  ->  wrap ("%{B" ++ color8 ++ "}  ") "  %{B-}" w
             "9"  ->  wrap ("%{B" ++ color9 ++ "}  ") "  %{B-}" w
+            "10" ->  wrap ("%{B" ++ color10 ++ "}  ") "  %{B-}" w
       )
     , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
     --, ppUrgent = wrap ("%{F" ++ darkGreen ++ "}  ") "  %{F-}"
@@ -321,6 +324,8 @@ myLogHookGay dbus =  def
             "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
             "8"  ->  wrap ("%{F" ++ color8b ++ "}  ") "  %{F-}" w
             "9"  ->  wrap ("%{F" ++ color9b ++ "}  ") "  %{F-}" w
+            "10" ->  wrap ("%{F" ++ color10b ++ "}  ") "  %{F-}" w
+
       )
 
     , ppHiddenNoWindows = (\w -> case w of
@@ -333,6 +338,8 @@ myLogHookGay dbus =  def
             "7"  ->  wrap ("%{B" ++ color7b ++ "}  ") "  %{B-}" w
             "8"  ->  wrap ("%{F" ++ color8b ++ "}  ") "  %{F-}" w
             "9"  ->  wrap ("%{F" ++ color9b ++ "}  ") "  %{F-}" w
+            "10" ->  wrap ("%{F" ++ color9b ++ "}  ") "  %{F-}" w
+
       )
 
     , ppWsSep = ""
@@ -348,7 +355,7 @@ myLogHook dbus =  def
     , ppCurrent = wrap ("%{B" ++ darkGreen ++ "}  ") "  %{B-}"
     , ppVisible = wrap ("%{B" ++ fg ++ "}  ") "  %{B-}"
     , ppHidden = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
-    , ppHiddenNoWindows = wrap ("%{F" ++ fg ++ "}  ") "  %{F-}"
+    , ppHiddenNoWindows = wrap ("%{F" ++ bg ++ "}  ") "  %{F-}"
     , ppWsSep = ""
     , ppSep = ""
     , ppLayout = return ""
@@ -403,7 +410,7 @@ main = do
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = dynamicLogWithPP (myLogHookGay dbus),
+        logHook            = dynamicLogWithPP (myLogHook dbus),
         startupHook        = myStartupHook
     }
 

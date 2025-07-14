@@ -1,0 +1,81 @@
+* {
+    transparency:     "real";
+    se:               rgba ( 94, 108, 145, 90 % );
+    bg:               rgba ( 0, 0, 0, 0 % );
+    red:              rgba ( 255, 85, 85, 90 % );
+    green:            rgba ( 0, 139, 38, 90 % );
+    bg2:              rgba ( 39, 39, 39, 90 % );
+    al:               rgba ( 0, 0, 0, 0 % );
+    opacity:          90.0000% ;
+    fg:               rgba ( 200, 85, 120, 90 % );
+    background-color: @bg;
+    ac:               rgba ( 255, 121, 198, 90 % );
+    //font: "RobotoMonoNerdFontMono 11";
+}
+window {
+    padding:          5;
+    width:            40%;
+    background-color: @bg2;
+    border-color:     @ac;
+    border:           0px;
+    children: [ inputbar, listview ];
+}
+entry {
+    spacing:    0;
+    text-color: @fg;
+}
+mainbox {
+    padding:      0;
+    border-color: @ac;
+    border:       0px;
+    children:     [ listview ];
+}
+listview {
+    fixed-height: 0;
+    padding:      1px ;
+    scrollbar:    false;
+    dynamic:      true;
+    border-color: @ac;
+    columns:      1;
+    spacing:      3px ;
+    border:       0px ;
+}
+prompt {
+    text-color:   @fg;
+}
+element-text {
+    background-color: rgba ( 0, 0, 0, 0 % );
+    text-color:       inherit;
+}
+element {
+    padding:       3px ;
+    border:        0px ;
+    horizontal-align: 0.5;
+}
+
+
+element normal.normal {
+    background-color: @bg;
+    text-color:       @fg;
+}
+element normal.active {
+    background-color: @green;
+    text-color:       @bg2;
+}
+element selected.normal {
+    background-color: @fg;
+    text-color:       @bg2;
+}
+element selected.active {
+    background-color: @fg;
+    text-color:       @bg2;
+}
+element alternate.normal {
+    background-color: @bg;
+    text-color:       @fg;
+}
+element alternate.active {
+    background-color: @bg;
+    text-color:       @fg;
+}
+
